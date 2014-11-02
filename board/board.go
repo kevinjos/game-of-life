@@ -1,10 +1,10 @@
 package board
 
 import (
-  "fmt"
-  "strings"
-  "time"
-  "math/rand"
+	"fmt"
+	"math/rand"
+	"strings"
+	"time"
 )
 
 const X, Y int = 40, 40
@@ -18,23 +18,23 @@ type Board struct {
 }
 
 func (b *Board) Print() {
-  s := make([]string, 1)
+	s := make([]string, 1)
 	for i := range b.Matrix {
 		for _, x := range b.Matrix[i] {
 			if x.Status == 3 {
-        s = append(s, "*")
+				s = append(s, "*")
 				//fmt.Print("*")
 			} else {
-        s = append(s, " ")
+				s = append(s, " ")
 				//fmt.Print(" ")
 			}
 		}
-    s = append(s, "\n")
+		s = append(s, "\n")
 		//fmt.Print("\n")
 	}
-  s = append(s, strings.Repeat("~", 2*X))
+	s = append(s, strings.Repeat("~", 2*X))
 	//fmt.Println("Gen", i, strings.Repeat("~", X-6))
-  fmt.Println(s)
+	fmt.Println(s)
 }
 
 func (b *Board) Initialize() {
@@ -43,7 +43,7 @@ func (b *Board) Initialize() {
 	prng := rand.New(source)
 	for i := 0; i < X; i++ {
 		for j := 0; j < Y; j++ {
-			if prng.Int() % 6 == 0 {
+			if prng.Int()%6 == 0 {
 				b.Matrix[j][i].Status = 3
 			}
 		}
@@ -137,5 +137,3 @@ func (b *Board) Generation() {
 		}
 	}
 }
-
-
