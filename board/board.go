@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const X, Y int = 40, 40
+const X, Y int = 80, 40
 
 type Light struct {
 	Status uint8 //0: Dead, 1: Born, 2: Dying, 3: Alive
@@ -18,22 +18,18 @@ type Board struct {
 }
 
 func (b *Board) Print() {
-	s := make([]string, 1)
+	s := ""
 	for i := range b.Matrix {
 		for _, x := range b.Matrix[i] {
 			if x.Status == 3 {
-				s = append(s, "*")
-				//fmt.Print("*")
+				s += "*"
 			} else {
-				s = append(s, " ")
-				//fmt.Print(" ")
+				s += " "
 			}
 		}
-		s = append(s, "\n")
-		//fmt.Print("\n")
+		s += "\n"
 	}
-	s = append(s, strings.Repeat("~", 2*X))
-	//fmt.Println("Gen", i, strings.Repeat("~", X-6))
+	s += strings.Repeat("~", X)
 	fmt.Println(s)
 }
 
