@@ -46,8 +46,8 @@ func (b *Board) Initialize() {
 	}
 }
 
-func (b *Board) Generation() {
-	trans := func(i, j int) uint8 {
+func (b *Board) Generation(topology string) {
+	trans := func(i, j int, topology string) uint8 {
 		r := func(l Light) uint8 {
 			if l.Status > 1 {
 				return 1
@@ -56,57 +56,68 @@ func (b *Board) Generation() {
 			}
 		}
 		var nc uint8 = 0
-		//Edge cases
-		if i == X-1 && j == Y-1 {
-			nc += r(b.Matrix[j][i-1])
-			nc += r(b.Matrix[j-1][i-1])
-			nc += r(b.Matrix[j-1][i])
-		} else if i == 0 && j == 0 {
-			nc += r(b.Matrix[j][i+1])
-			nc += r(b.Matrix[j+1][i+1])
-			nc += r(b.Matrix[j+1][i])
-		} else if i == 0 && j == Y-1 {
-			nc += r(b.Matrix[j][i+1])
-			nc += r(b.Matrix[j-1][i+1])
-			nc += r(b.Matrix[j-1][i])
-		} else if i == X-1 && j == 0 {
-			nc += r(b.Matrix[j][i-1])
-			nc += r(b.Matrix[j+1][i-1])
-			nc += r(b.Matrix[j+1][i])
-		} else if i == 0 {
-			nc += r(b.Matrix[j][i+1])
-			nc += r(b.Matrix[j+1][i+1])
-			nc += r(b.Matrix[j-1][i+1])
-			nc += r(b.Matrix[j+1][i])
-			nc += r(b.Matrix[j-1][i])
-		} else if j == 0 {
-			nc += r(b.Matrix[j][i+1])
-			nc += r(b.Matrix[j+1][i+1])
-			nc += r(b.Matrix[j][i-1])
-			nc += r(b.Matrix[j+1][i-1])
-			nc += r(b.Matrix[j+1][i])
-		} else if i == X-1 {
-			nc += r(b.Matrix[j][i-1])
-			nc += r(b.Matrix[j+1][i-1])
-			nc += r(b.Matrix[j-1][i-1])
-			nc += r(b.Matrix[j+1][i])
-			nc += r(b.Matrix[j-1][i])
-		} else if j == Y-1 {
-			nc += r(b.Matrix[j][i+1])
-			nc += r(b.Matrix[j-1][i+1])
-			nc += r(b.Matrix[j][i-1])
-			nc += r(b.Matrix[j-1][i-1])
-			nc += r(b.Matrix[j-1][i])
-		} else {
-			//Base case
-			nc += r(b.Matrix[j][i+1])
-			nc += r(b.Matrix[j+1][i+1])
-			nc += r(b.Matrix[j-1][i+1])
-			nc += r(b.Matrix[j][i-1])
-			nc += r(b.Matrix[j+1][i-1])
-			nc += r(b.Matrix[j-1][i-1])
-			nc += r(b.Matrix[j+1][i])
-			nc += r(b.Matrix[j-1][i])
+		if strings.EqualFold(topology, "closed") {
+			//Edge cases
+			if i == X-1 && j == Y-1 {
+				nc += r(b.Matrix[j][i-1])
+				nc += r(b.Matrix[j-1][i-1])
+				nc += r(b.Matrix[j-1][i])
+			} else if i == 0 && j == 0 {
+				nc += r(b.Matrix[j][i+1])
+				nc += r(b.Matrix[j+1][i+1])
+				nc += r(b.Matrix[j+1][i])
+			} else if i == 0 && j == Y-1 {
+				nc += r(b.Matrix[j][i+1])
+				nc += r(b.Matrix[j-1][i+1])
+				nc += r(b.Matrix[j-1][i])
+			} else if i == X-1 && j == 0 {
+				nc += r(b.Matrix[j][i-1])
+				nc += r(b.Matrix[j+1][i-1])
+				nc += r(b.Matrix[j+1][i])
+			} else if i == 0 {
+				nc += r(b.Matrix[j][i+1])
+				nc += r(b.Matrix[j+1][i+1])
+				nc += r(b.Matrix[j-1][i+1])
+				nc += r(b.Matrix[j+1][i])
+				nc += r(b.Matrix[j-1][i])
+			} else if j == 0 {
+				nc += r(b.Matrix[j][i+1])
+				nc += r(b.Matrix[j+1][i+1])
+				nc += r(b.Matrix[j][i-1])
+				nc += r(b.Matrix[j+1][i-1])
+				nc += r(b.Matrix[j+1][i])
+			} else if i == X-1 {
+				nc += r(b.Matrix[j][i-1])
+				nc += r(b.Matrix[j+1][i-1])
+				nc += r(b.Matrix[j-1][i-1])
+				nc += r(b.Matrix[j+1][i])
+				nc += r(b.Matrix[j-1][i])
+			} else if j == Y-1 {
+				nc += r(b.Matrix[j][i+1])
+				nc += r(b.Matrix[j-1][i+1])
+				nc += r(b.Matrix[j][i-1])
+				nc += r(b.Matrix[j-1][i-1])
+				nc += r(b.Matrix[j-1][i])
+			} else {
+				//Base case
+				nc += r(b.Matrix[j][i+1])
+				nc += r(b.Matrix[j+1][i+1])
+				nc += r(b.Matrix[j-1][i+1])
+				nc += r(b.Matrix[j][i-1])
+				nc += r(b.Matrix[j+1][i-1])
+				nc += r(b.Matrix[j-1][i-1])
+				nc += r(b.Matrix[j+1][i])
+				nc += r(b.Matrix[j-1][i])
+			}
+		} else if strings.EqualFold(topology, "wrapped") {
+			nc += r(b.Matrix[(j+Y)%Y][(i+1+X)%X])
+			nc += r(b.Matrix[(j+1+Y)%Y][(i+1+X)%X])
+			nc += r(b.Matrix[(j-1+Y)%Y][(i+1+X)%X])
+			nc += r(b.Matrix[(j+Y)%Y][(i-1+X)%X])
+			nc += r(b.Matrix[(j+1+Y)%Y][(i-1+X)%X])
+			nc += r(b.Matrix[(j-1+Y)%Y][(i-1+X)%X])
+			nc += r(b.Matrix[(j+1+Y)%Y][(i+X)%X])
+			nc += r(b.Matrix[(j-1+Y)%Y][(i+X)%X])
 		}
 		return nc
 	}
@@ -114,7 +125,7 @@ func (b *Board) Generation() {
 	var nc uint8
 	for j := range b.Matrix {
 		for i, x := range b.Matrix[j] {
-			nc = trans(i, j)
+			nc = trans(i, j, topology)
 			if x.Status == 0 && nc == 3 {
 				b.Matrix[j][i].Status = 1
 			} else if x.Status == 3 && (nc < 2 || nc > 3) {

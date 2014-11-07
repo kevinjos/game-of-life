@@ -26,7 +26,7 @@ func main() {
 			enc := gob.NewEncoder(c) // Will write to network.
 			for {
 				time.Sleep(300 * time.Millisecond)
-				b.Generation()
+				b.Generation("wrapped")
 				err := enc.Encode(b)
 				if err != nil {
 					log.Printf("Encoding error: %s", err)
